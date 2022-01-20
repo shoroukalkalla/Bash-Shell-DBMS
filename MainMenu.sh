@@ -22,10 +22,11 @@ do
 			ls DB
 			;;
 		"Connect To Database")
-			ConnectDB.sh
+			./connectDB.sh
 			;;
 		"Drop Database")
-			DropDB
+			./dropDB.sh
+			mainMenu
 			;;
 		"Exit")
 			exit
