@@ -1,9 +1,7 @@
 #! /bin/bash
 
-if [ -d DB ]
+if [ ! -d DB ]
 then
-        echo "DB already exists"
-else
         mkdir DB
 fi
 
@@ -18,6 +16,7 @@ do
   	case $opt in 
                "Create Database")
                       ./createDB.sh
+			mainMenu
 			;;
 		"List Database")
 			ls DB
@@ -33,6 +32,7 @@ do
 			;;
 		*)
 			echo "Invalid Option"
+			mainMenu
 			;;
 	esac
 done
