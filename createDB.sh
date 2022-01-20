@@ -1,4 +1,7 @@
 #!/bin/bash
+
+echo "hello there"
+
 function createDB {
    echo "Enter Database Name: "
    read dbName
@@ -9,3 +12,5 @@ function createDB {
    	  mkdir ./DB/$dbName
 	fi
 }
+export -f createDB
+./MainMenu.sh

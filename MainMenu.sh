@@ -17,13 +17,13 @@ select opt in "${options[@]}"
 do
   	case $opt in 
                "Create Database")
-                       createDB
+                      ./createDB.sh
 			;;
 		"List Database")
 			ls DB
 			;;
 		"Connect To Database")
-			ConnectToDB
+			ConnectDB.sh
 			;;
 		"Drop Database")
 			DropDB
