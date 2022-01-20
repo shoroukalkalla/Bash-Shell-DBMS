@@ -2,19 +2,20 @@
 
 
 function createMetaData {
-	#currentDir=$1
-	currentDir=DB/iti/students/
-	#colsNumber=$2
-	colsNumber=2
-	
-	#mkdir $currentDir/metaData.db
+	# ---- Parameters ------
+	# $1 => directory path
+	# $2 => Type of cols [int, string, date, bool, ... and so on]
+	# -----------------------------------------------------------
 
-	if [ -s t ]
+	dataPath=$1
+	touch ${dataPath}metaData.db
+	metaData=DB/iti/students/metaData.db # metaData Path
+	if [ -s $metaData ]
 	then
-		echo "Yes"
+		echo -n " |#| $2" >> $metaData
 	else
-		echo "No"
+		echo -n $2 >> $metaData
 	fi
 }
 
-createMetaData
+#createMetaData DB/iti/students/ hello_test
