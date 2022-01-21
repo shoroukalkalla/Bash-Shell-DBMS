@@ -12,7 +12,7 @@ function createMetaData {
 	metaData=DB/iti/students/metaData.db # metaData Path
 	if [ -s $metaData ]
 	then
-		echo -n " |#| $2" >> $metaData
+		echo -n " | $2" >> $metaData
 	else
 		echo -n $2 >> $metaData
 	fi
