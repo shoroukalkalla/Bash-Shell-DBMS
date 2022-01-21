@@ -7,13 +7,14 @@ function createData {
         # $3 => data [ cols name or values]
         # -----------------------------------------------------------
 
-        metaPath=$1
-        if [ ! -f ${metaPath}data.db ]
+        dataPath=$1
+        if [ ! -f ${dataPath}data.db ]
         then
-                touch ${metaPath}data.db
+                touch ${dataPath}data.db
+                echo  "" > ${dataPath}data.db
         fi
 
-        data=${metaPath}data.db # data Path
+        data=${dataPath}data.db # data Path
 	if [[ $2 = false ]]
 	then
 		insertData $3
@@ -24,11 +25,13 @@ function createData {
 }
 
 function insertData {
-	if [ -s $data ]
+        if [[ -s "$data" && -z "$(tail -c 1 "$data")" ]]
         then
-       		 echo -n " |#| $1" >> $data
-        else
+                #echo "Newline at end of file!"
                 echo -n $1 >> $data
+        else
+                #echo "No newline at end of file!"
+                echo -n " | $1" >> $data
         fi
 }
 
