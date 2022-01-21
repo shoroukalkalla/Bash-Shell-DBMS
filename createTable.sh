@@ -46,7 +46,7 @@ function createTable {
 
 function createTableStructure {
 	read -p "column name: " colName
-	createData $1 $2 $colName
+	createData $1 false $colName
 	read -p "Data type: " datatype
 	createMetaData $1 $datatype
 }
