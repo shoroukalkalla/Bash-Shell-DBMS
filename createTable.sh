@@ -28,15 +28,20 @@ function createTable {
 	else
 		mkdir $currentDir${tableName}
 		echo -e "$GREEN Table $tableName has been created successfully $NC"
+		currentDir=$currentDir${tableName}/
+		touch ${currentDir}metaData.db # create MetaData file
+		touch ${currentDir}data.db # create Data file
+		echo "" > ${currentDir}data.db
 		
 		read -p "Columns number: " colsNumber
 		counter=0
+		pKey=''
 		while [ $counter -lt $colsNumber ]
 		do
-						#directory path	  // new line
-			createTableStructure $currentDir${tableName}/ false
+			createTableStructure
 			let counter=$counter+1
 		done
+		#echo -e "\n" >> ${currentDir}data.db
 	fi
 
 	echo -e "\n"
@@ -45,10 +50,50 @@ function createTable {
 }
 
 function createTableStructure {
+	# ------ Create Data file --------
 	read -p "column name: " colName
-	createData $1 false $colName
-	read -p "Data type: " datatype
-	createMetaData $1 $datatype
+
+	if [[ -s "${currentDir}data.db" && -z "$(tail -c 1 "${currentDir}data.db")" ]]
+	then
+			#echo "Newline at end of file!"
+			echo -n $colName >> ${currentDir}data.db
+	else
+			#echo "No newline at end of file!"
+			echo -n "|$colName" >> ${currentDir}data.db
+	fi
+
+
+	# --- Create MetaData File -------
+	echo "Data type: "
+	datatype=""
+	select choice in "int" "string"
+	do
+		case $choice in
+		int) datatype=int; break;;
+		string) datatype=string; break;;
+		*) echo "Invalid Choice";;
+		esac
+	done
+
+	metaValues=""
+	if [ -z $pKey ] # pkey is empty
+	then
+		echo "Put Primary Key ? "
+		select choice in "yes" "no"
+		do
+			case $choice in
+				yes) 
+					pKey="PK"; 
+					metaValues=$colName"|"$datatype"|"$pKey
+					break;;
+				no) metaValues=$colName"|"$datatype; break;;
+				*) echo "Invalid Choice";;
+			esac
+		done
+		else
+			metaValues=$colName"|"$datatype
+	fi
+	echo $metaValues >> ${currentDir}metaData.db
 }
 
 createTable
