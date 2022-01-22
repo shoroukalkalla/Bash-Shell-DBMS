@@ -31,7 +31,7 @@ function insertData {
                 echo -n $1 >> $data
         else
                 #echo "No newline at end of file!"
-                echo -n " | $1" >> $data
+                echo -n "|$1" >> $data
         fi
 }
 
