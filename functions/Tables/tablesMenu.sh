@@ -5,6 +5,7 @@
 . ${tablesDirectoryPath}insertInto.sh
 . ${tablesDirectoryPath}dropTable.sh
 . ${tablesDirectoryPath}selectFromTable.sh
+. ${tablesDirectoryPath}updateTable.sh
 
 . ${databaseDirectoryPath}mainMenu.sh
 # -------------------------------------
@@ -29,7 +30,7 @@ function tablesMenu {
 			create | 2) createTable;;
 			insert | 3) insertInto;;
 			select | 4) selectFromTable;;
-			update | 5) echo update;;
+			update | 5) updateTable;;
 			delete | 6) echo delete;;
 			drop | 7) dropTable;;
 			back | 8) mainMenu;;

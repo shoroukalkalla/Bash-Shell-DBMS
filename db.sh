@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # ----- Global Variables --------------
-connectedDatabase=""
+connectedDatabase="" # selected Database
 
 databaseDirectoryPath="./functions/DB/"
 tablesDirectoryPath="./functions/Tables/"

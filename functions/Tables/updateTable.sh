@@ -1,49 +1,64 @@
 #!/bin/bash
 
-#. ./insertInto.sh # we need validate function inside it
+# . ./insertInto.sh # we need validate function inside it
 
 function updateTable {
-	currentDir=DB/iti/
+	currentDir=	currentDir=DBMS/$connectedDatabase/
 	NC='\033[0m' # No Color
 	GREEN='\033[0;32m'
 	RED='\033[0;31m'
 	Cyan='\033[0;36m'  
 	Yellow='\033[0;33m'
     read -p "Enter table name: " tableName
+	dataHomeDirectory=${currentDir}$tableName/ # the directory of [data.db]
 	currentDataPath=${currentDir}$tableName/data.db
 	metaDataPath=${currentDir}$tableName/metaData.db
 	columnsName=${Cyan}`awk 'BEGIN{FS="|"}{print "-"$1"("$2") "}' $metaDataPath`${NC}
 	if [ -d ${currentDir}$tableName ]
 	then
 		echo -e $columnsName
-		read -p "Update condition by select column name: " colName
+		read -p "Update condition by primary key column name: " colName
 		columnPosition=$(awk -v colName=$colName 'BEGIN{FS="|"}{if(NR==2)for(i=1;i<=NF;i++){if($i==colName) print i}}' $currentDataPath)
-		echo $columnPosition
+		
 		if [ $columnPosition ]
 		then
-			read -p "Condition value when: $colName = " conditionValue
-			checkConditionValue=`awk -v columnPosition=$columnPosition -v conditionValue=$conditionValue 'BEGIN{FS="|"}{if($columnPosition==conditionValue)print NR}' $currentDataPath`
+			checkPrimaryKey=$(awk -v colName=$colName 'BEGIN{FS="|"}{for(i=1;i<=NF;i++)if($i==colName) print $3}' $metaDataPath)
 
-			echo "______________________"
-			echo $checkConditionValue
-			echo "______________________"
-
-			# check if the value of condition is found or not
-			if [ $checkConditionValue ]
+			if [ ! -z $checkPrimaryKey ]
 			then
-				echo "__- ------------ ___"
-				echo $checkConditionValue
-				echo "_______________"
+				read -p "Condition value when: $colName = " conditionValue
+				checkConditionValue=`awk -v columnPosition=$columnPosition -v conditionValue=$conditionValue 'BEGIN{FS="|"}{if($columnPosition==conditionValue)print NR}' $currentDataPath`
 
-				echo "Update row by column Name: "
-				echo -e $columnsName
-				read -p "Update: " fieldName 
-				colKey=`awk 'BEGIN{FS="|"}{if($1==fieldName) print $3}' fieldName=$fieldName $metaDataPath`
-				
-				validatePrimaryKey $colName $colType
+				# check if the value of condition is found or not
+				if [ $checkConditionValue ]
+				then
+					echo "__- ------------ ___"
+					echo $checkConditionValue
+					echo "_______________"
+
+					echo "Update row by column Name: "
+					echo -e $columnsName
+					read -p "Update: " fieldName 
+					colKey=`awk 'BEGIN{FS="|"}{if($1==fieldName) print $3}' fieldName=$fieldName $metaDataPath`
+					colType=`awk 'BEGIN{FS="|"}{if($1==fieldName) print $2}' fieldName=$fieldName $metaDataPath`
+					fieldNamePosition=`awk 'BEGIN{FS="|"}{if(NR==2)for(i=1;i<=NF;i++)if($i==fieldName) print i}' fieldName=$fieldName $metaDataPath`
+					colValueName=`awk 'BEGIN{FS="|"}{if(NR==checkConditionValue) print $fieldNamePosition}' fieldNamePosition=$fieldNamePosition checkConditionValue=$checkConditionValue $currentDataPath`
+
+					echo "___colvalue___"
+					echo fieldNamePosition
+					echo $colValue
+					echo "_______________________"
+					
+					validatePrimaryKey $fieldName $colType
+				else
+					echo -e "${RED}Error: condition wasn't found${NC}"
+				fi
 			else
-				echo -e "${RED}Error: condition wasn't found${NC}"
+					echo "This field is not a primary key"
 			fi
+
+
+
 		else
 			echo -e "${RED}Invalid Column Name${NC}"
 		fi
@@ -59,13 +74,13 @@ function validatePrimaryKey {
 	currentDir=$3
 	if [[ $colKey ]] 
 	then    
-		pKColumnPosition=$(awk -v c=$colName 'BEGIN{FS="|"}{for(i=1;i<=NF;i++){gsub(/ /,"");if($i==c)print i}}' ${currentDir}data.db)
+		pKColumnPosition=$(awk -v c=$colName 'BEGIN{FS="|"}{for(i=1;i<=NF;i++){gsub(/ /,"");if($i==c)print i}}' $currentDataPath)
 
 
 		while true
 		do
 			read -p "Enter value of => $colName($colType): " value
-			field=$(awk -v value=$value -v pkPos=$pKColumnPosition 'BEGIN{FS="|"}{if($pkPos==value)print"yes"}' ${currentDir}data.db)
+			field=$(awk -v value=$value -v pkPos=$pKColumnPosition 'BEGIN{FS="|"}{if($pkPos==value)print"yes"}' $currentDataPath)
 
 			if [ -z $field ]
 			then
@@ -77,4 +92,13 @@ function validatePrimaryKey {
 	else
 		read -p "Enter value of => $colName($colType): " value
 	fi
+		validateData $colType $value
+
+		sed -e "s/$colValueName/$value|$conditionValue/" $currentDataPath > data.db
+		rm -rf $currentDataPath
+		mv data.db $dataHomeDirectory/
+
+		# result=$(sed -e "s/$colValueName/$value|$conditionValue/" $currentDataPath)
+		# echo -e $result
+		
 }
