@@ -20,10 +20,35 @@ function insertInto {
        echo  "" >> ${currentDir}data.db
        while [[ $counter -le $colNumbers ]]
        do
-            colName=`awk 'BEGIN{FS="|"}{if(NR==2)print $c}' c=$counter ${currentDir}data.db`
-            colType=`awk 'BEGIN{FS="|"}{if(NR==1) print $c}' c=$counter ${currentDir}metaData.db`
+            colName=`awk 'BEGIN{FS="|"}{if(NR==2) print $c}' c=$counter ${currentDir}data.db`
+            colType=`awk 'BEGIN{FS="|"}{if(NR==c) print $2}' c=$counter ${currentDir}metaData.db`
+            colKey=`awk 'BEGIN{FS="|"}{if(NR==c) print $3}' c=$counter ${currentDir}metaData.db`
 
-            read -p "Enter value of => $colName($colType): " value
+            # field=$(awk -v fieldName=$fieldName 'BEGIN{FS="|"}{if(NR==2){for(i=1;i<=NF;i++){gsub(/ /,""); if($i==fieldName) print $i}}}' $currentPath)
+
+            # validation of primary key
+            if [[ $colKey ]] 
+            then    
+                pKColumnPosition=$(awk -v c=$colName 'BEGIN{FS="|"}{for(i=1;i<=NF;i++){gsub(/ /,"");if($i==c)print i}}' ${currentDir}data.db)
+
+
+                while true
+                do
+                    read -p "Enter value of => $colName($colType): " value
+                    field=$(awk -v value=$value -v pkPos=$pKColumnPosition 'BEGIN{FS="|"}{if($pkPos==value)print"yes"}' ${currentDir}data.db)
+
+                    if [ -z $field ]
+                    then
+                        break;
+                    else
+                        echo -e "${RED}Duplicated Primary Key${NC}"
+                    fi
+                done
+            else
+                read -p "Enter value of => $colName($colType): " value
+            fi
+
+            # validation of number
             if [ $colType = int ]
             then
                     validateData 'int' $value
@@ -51,7 +76,8 @@ function validateData {
     then
         while ! [[ $data =~ [0-9\ ] ]]
         do
-            read -p "Please, enter a valid number: " data
+            echo -e "${RED}Please, enter a valid number: ${NC}"
+            read -p "Enter a number: " data
         done
     fi
     return $data
