@@ -4,11 +4,6 @@
 
 function updateTable {
 	currentDir=	currentDir=DBMS/$connectedDatabase/
-	NC='\033[0m' # No Color
-	GREEN='\033[0;32m'
-	RED='\033[0;31m'
-	Cyan='\033[0;36m'  
-	Yellow='\033[0;33m'
     read -p "Enter table name: " tableName
 	dataHomeDirectory=${currentDir}$tableName/ # the directory of [data.db]
 	currentDataPath=${currentDir}$tableName/data.db
@@ -51,7 +46,7 @@ function updateTable {
 					
 					validatePrimaryKey $fieldName $colType
 				else
-					echo -e "${RED}Error: condition wasn't found${NC}"
+					DisplayMessages "Error: condition wasn't found" "error"
 				fi
 			else
 					echo "This field is not a primary key"
@@ -60,10 +55,10 @@ function updateTable {
 
 
 		else
-			echo -e "${RED}Invalid Column Name${NC}"
+			DisplayMessages "Invalid Column Name" "error"
 		fi
 	else
-        echo -e "${RED}Table wasn't found ${NC}"
+        DisplayMessages "Table wasn't found" "error"
 	fi
 }
 
@@ -86,7 +81,7 @@ function validatePrimaryKey {
 			then
 				break;
 			else
-				echo -e "${RED}Duplicated Primary Key${NC}"
+				DisplayMessages "Duplicated Primary Key" "error"
 			fi
 		done
 	else
