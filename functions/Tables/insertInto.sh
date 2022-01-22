@@ -10,7 +10,7 @@ function insertInto {
     then
        currentDir=${currentDir}$tableName/
 
-        colNumbers=`awk 'BEGIN{FS="|"}END{print NF}' ${currentDir}data.db`
+       colNumbers=`awk 'BEGIN{FS="|"}END{print NF}' ${currentDir}data.db`
        counter=1
        echo  "" >> ${currentDir}data.db
        while [[ $counter -le $colNumbers ]]
@@ -45,7 +45,7 @@ function insertInto {
             if [ $colType = int ]
             then
                     validateData 'int' $value
-                    value=$?
+                    value=$? #return value from function.
             fi
 
             createData ${currentDir} false $value
@@ -60,6 +60,10 @@ function insertInto {
 
 }
 
+
+#two parameters => 
+    # $1 => data type.
+    # $2 => data.
 function validateData {
     colType=$1
     data=$2

@@ -21,8 +21,8 @@ Cyan='\033[0;36m'
 # ----- Helper Functions ----------
 
 function DisplayMessages {
-    # $1 => Data
-    # $2 => message Type
+    # $1 => Message
+    # $2 => Message Type
     #-------------------
     if [[ $2 == 'error' ]]
     then

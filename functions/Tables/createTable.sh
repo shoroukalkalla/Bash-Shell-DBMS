@@ -11,12 +11,12 @@ function createTable {
 		select choices in "try again" "back"
 		do
 			case $REPLY in 
-				again | 1) ;;
-				back | 2) exit;;
-				*) echo $REPLY incorrect choice;;
+				again | 1) createTable;;
+				back | 2) tablesMenu; break ;;
+				*) DisplayMessages "$REPLY incorrect choice" "error";;
 			esac
 
-			createTable # Call createTable again
+			#createTable # Call createTable again
 		done
 
 	else

@@ -8,7 +8,7 @@ function selectFromTable {
     then
         echo -e "\n"
         DisplayMessages "Table Data "
-        awk 'BEGIN{FS="|"}{print $0}' ${currentDir}$tableName/data.db
+        awk '{print $0}' ${currentDir}$tableName/data.db
         echo -e "\n"
     else
         DisplayMessages "Table wasn't found " "error"
