@@ -9,13 +9,20 @@ function createMetaData {
 
 	dataPath=$1
 	touch ${dataPath}metaData.db
-	metaData=DB/iti/students/metaData.db # metaData Path
-	if [ -s $metaData ]
-	then
-		echo -n " | $2" >> $metaData
-	else
-		echo -n $2 >> $metaData
-	fi
+	metaData=$1metaData.db # metaData Path
+	echo "" >> metaData.db
+
+		echo "--- metadat file --" 
+		echo $2
+		echo "-----------"
+        if [[ -s "$data" && -z "$(tail -c 1 "$data")" ]]
+        then
+                #echo "Newline at end of file!"
+                echo -n $2 >> $metaData
+        else
+                #echo "No newline at end of file!"
+                echo -n " | $2" >> $metaData
+        fi
 }
 
 #createMetaData DB/iti/students/ hello_test
