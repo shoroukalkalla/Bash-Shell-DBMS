@@ -1,6 +1,7 @@
 #! /bin/bash
 
 # --------- Include Files -------------
+
 . ${databaseDirectoryPath}createDB.sh
 . ${databaseDirectoryPath}connectDB.sh
 . ${databaseDirectoryPath}dropDB.sh
@@ -11,7 +12,7 @@ then
         mkdir DBMS
 fi
 
-clear
+# clear
 
 function mainMenu {
 PS3="Please enter your choice: "
@@ -44,6 +45,3 @@ do
 	esac
 done
 }
-
-
-mainMenu

@@ -1,18 +1,12 @@
 #!/bin/bash
 
-. ./createData.sh
-. ./createMetaData.sh
-
 function createTable {
-	currentDir=DB/iti/
-	NC='\033[0m' # No Color
-	GREEN='\033[0;32m'
-	RED='\033[0;31m'
+	currentDir=DBMS/$connectedDatabase/
 
 	read -p "Enter table name: " tableName
 	if [ -d $currentDir${tableName} ]
 	then
-		echo -e "${RED}Table $tableName already exists${NC}"
+		DisplayMessages "Table $tableName already exists$" "error"
 
 		select choices in "try again" "back"
 		do
@@ -27,7 +21,7 @@ function createTable {
 
 	else
 		mkdir $currentDir${tableName}
-		echo -e "$GREEN Table $tableName has been created successfully $NC"
+		DisplayMessages "Table $tableName has been created successfully" "success"
 		currentDir=$currentDir${tableName}/
 		touch ${currentDir}metaData.db # create MetaData file
 		touch ${currentDir}data.db # create Data file
@@ -41,12 +35,11 @@ function createTable {
 			createTableStructure
 			let counter=$counter+1
 		done
-		#echo -e "\n" >> ${currentDir}data.db
 	fi
 
 	echo -e "\n"
 
-	./TablesMenu.sh
+	tablesMenu
 }
 
 function createTableStructure {
@@ -55,10 +48,8 @@ function createTableStructure {
 
 	if [[ -s "${currentDir}data.db" && -z "$(tail -c 1 "${currentDir}data.db")" ]]
 	then
-			#echo "Newline at end of file!"
 			echo -n $colName >> ${currentDir}data.db
 	else
-			#echo "No newline at end of file!"
 			echo -n "|$colName" >> ${currentDir}data.db
 	fi
 
@@ -71,7 +62,7 @@ function createTableStructure {
 		case $choice in
 		int) datatype=int; break;;
 		string) datatype=string; break;;
-		*) echo "Invalid Choice";;
+		*) DisplayMessages "Invalid Choice" "error";;
 		esac
 	done
 
@@ -87,7 +78,7 @@ function createTableStructure {
 					metaValues=$colName"|"$datatype"|"$pKey
 					break;;
 				no) metaValues=$colName"|"$datatype; break;;
-				*) echo "Invalid Choice";;
+				*) DisplayMessages "Invalid Choice" "error";;
 			esac
 		done
 		else
@@ -95,7 +86,5 @@ function createTableStructure {
 	fi
 	echo $metaValues >> ${currentDir}metaData.db
 }
-
-createTable
 
 

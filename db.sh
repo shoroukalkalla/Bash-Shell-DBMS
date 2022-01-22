@@ -1,7 +1,15 @@
 #! /bin/bash
 
 # ----- Global Variables --------------
+connectedDatabase=""
+
 databaseDirectoryPath="./functions/DB/"
+tablesDirectoryPath="./functions/Tables/"
+. ${databaseDirectoryPath}MainMenu.sh
+
+. ${tablesDirectoryPath}tablesMenu.sh
+. ${tablesDirectoryPath}createData.sh
+
 
 #   --- Colors ----
 Red='\033[0;31m'
@@ -29,8 +37,8 @@ function DisplayMessages {
 
 # ----------------------------------
 
-# ----- Main Menu -----------------
+# ----- Run Main Menu -------------
 
-. ./functions/DB/MainMenu.sh
+mainMenu
 
 # --------------------------------

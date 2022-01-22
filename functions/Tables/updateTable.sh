@@ -78,6 +78,3 @@ function validatePrimaryKey {
 		read -p "Enter value of => $colName($colType): " value
 	fi
 }
-
-
-updateTable

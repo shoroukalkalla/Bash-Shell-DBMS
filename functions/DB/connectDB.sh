@@ -4,7 +4,8 @@ function ConnectToDB {
 	read dbName
 	if [ -d ./DBMS/$dbName ]
 	 then
-		cd ./DBMS/$dbName
+		connectedDatabase=$dbName
+		tablesMenu 
 	else
 		DisplayMessages "Database $dbName was not found" "error"
 		mainMenu

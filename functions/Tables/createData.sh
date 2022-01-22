@@ -34,6 +34,3 @@ function insertData {
                 echo -n "|$1" >> $data
         fi
 }
-
-#createData DB/iti/students/ true hello_test
-

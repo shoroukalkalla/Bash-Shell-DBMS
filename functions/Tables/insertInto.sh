@@ -1,30 +1,23 @@
 #!/bin/bash
 
-. ./createData.sh
+. ${tablesDirectoryPath}createData.sh
 
 function insertInto {
-	currentDir=DB/iti/
-	NC='\033[0m' # No Color
-	GREEN='\033[0;32m'
-	RED='\033[0;31m'
+	currentDir=DBMS/$connectedDatabase/
     read -p "Enter table name: " tableName
+
     if [ -d ${currentDir}$tableName ]
     then
        currentDir=${currentDir}$tableName/
 
-       # awk 'BEGIN{FS="|"}{for(i=1;i<=NF;i++) read -p enter $i test}' ${currentDir}data.db
-
         colNumbers=`awk 'BEGIN{FS="|"}END{print NF}' ${currentDir}data.db`
        counter=1
-      # echo -e "\n" >> ${currentDir}data.db
        echo  "" >> ${currentDir}data.db
        while [[ $counter -le $colNumbers ]]
        do
             colName=`awk 'BEGIN{FS="|"}{if(NR==2) print $c}' c=$counter ${currentDir}data.db`
             colType=`awk 'BEGIN{FS="|"}{if(NR==c) print $2}' c=$counter ${currentDir}metaData.db`
             colKey=`awk 'BEGIN{FS="|"}{if(NR==c) print $3}' c=$counter ${currentDir}metaData.db`
-
-            # field=$(awk -v fieldName=$fieldName 'BEGIN{FS="|"}{if(NR==2){for(i=1;i<=NF;i++){gsub(/ /,""); if($i==fieldName) print $i}}}' $currentPath)
 
             # validation of primary key
             if [[ $colKey ]] 
@@ -41,7 +34,7 @@ function insertInto {
                     then
                         break;
                     else
-                        echo -e "${RED}Duplicated Primary Key${NC}"
+                        DisplayMessages "Duplicated Primary Key" "error"
                     fi
                 done
             else
@@ -61,29 +54,22 @@ function insertInto {
         done
 
     else
-        echo -e "${RED}Table wasn't found ${NC}"
+        DisplayMessages "Table wasn't found " "error"
+        tablesMenu
     fi
 
 }
 
 function validateData {
-    # $1 => data type
-    # $2 => data
-    #-----------------
     colType=$1
     data=$2
     if [[ $colType=='int' ]]
     then
         while ! [[ $data =~ [0-9\ ] ]]
         do
-            echo -e "${RED}Please, enter a valid number: ${NC}"
+            DisplayMessages "Please, enter a valid number: " "error"
             read -p "Enter a number: " data
         done
     fi
     return $data
 }
-
-# validateData 'int' test
-# echo $?
-
-insertInto
