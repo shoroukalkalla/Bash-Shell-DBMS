@@ -7,9 +7,9 @@
 *.sh.*
 *.sw*
 
-DB
-/DB
-/DB/
+DBMS
+/DBMS
+/DBMS/
 
 ### Linux ###
 *~
